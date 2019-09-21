@@ -58,7 +58,7 @@ function createSubscription(email, name, mergeFields) {
 exports.handler = function(event, context, callback) {
   var payload = JSON.parse(event.body);
   console.log("Invoking Lambda with payload", payload);
-  createSubscription(payload.email, payload.name)
+  createSubscription(payload.email, payload.name, payload.mergeFields)
     .then(function(res) {
       console.log("MAILCHIMP SUCCESS", res);
       callback(null, res);
