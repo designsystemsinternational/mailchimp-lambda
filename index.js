@@ -17,14 +17,14 @@ function urlForUser(email) {
   return urlForList() + md5(email);
 }
 
-function createSubscription(email, name) {
+function createSubscription(email, name, mergeFields) {
   var nameSplit = name ? name.split(" ") : [];
-  var merge_fields = {};
+  var merge_fields = mergeFields || {};
   if (nameSplit[0]) {
     merge_fields.FNAME = nameSplit[0];
   }
   if (nameSplit[1]) {
-    merge_fields.LNAME = nameSplit[1];
+    merge_fields.LNAME = nameSplit.slice(1).join(' ');
   }
   return new Promise(function(resolve, reject) {
     request
@@ -58,7 +58,7 @@ function createSubscription(email, name) {
 exports.handler = function(event, context, callback) {
   var payload = JSON.parse(event.body);
   console.log("Invoking Lambda with payload", payload);
-  createSubscription(payload.email, payload.name)
+  createSubscription(payload.email, payload.name, payload.mergeFields)
     .then(function(res) {
       console.log("MAILCHIMP SUCCESS", res);
       callback(null, res);
